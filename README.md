@@ -2,4 +2,4 @@
 Chrome Extension for blacklisting terms
 
 To Do:
-- Add a privacy option that only shows the term blacklisted on the page when you hover over it
+- Add a "streamer mode" like censor option that hides the added blacklisted terms page (options.html) when you are viewing the page.
