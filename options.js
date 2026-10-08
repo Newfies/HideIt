@@ -1,10 +1,19 @@
 let blacklist = [];
+let streamerModeEnabled = false;
 
 function load() {
-  chrome.storage.sync.get(["blacklist"], (data) => {
-    blacklist = data.blacklist || [];
-    render();
-  });
+  chrome.storage.sync.get(
+    ["blacklist", "streamerMode"],
+    (data) => {
+      blacklist = data.blacklist || [];
+      streamerModeEnabled = data.streamerMode === true;
+
+      document.getElementById("streamerMode").checked =
+        streamerModeEnabled;
+
+      render();
+    }
+  );
 }
 
 function save() {
@@ -18,22 +27,40 @@ function save() {
 
 function render() {
   const list = document.getElementById("list");
-  list.innerHTML = "";
+  list.replaceChildren();
 
   blacklist.forEach((entry, index) => {
     const div = document.createElement("div");
     div.className = "entry";
 
-    div.innerHTML = `
-      <strong>Blocking</strong>
-      <span class="entry-term">${escapeHtml(entry.term)}</span>
-      <div class="entry-meta">
-        ${entry.caseSensitive ? "Strict Case" : "Any Case"} &bull; 
-        Replaced with: ${
-          entry.replacement ? escapeHtml(entry.replacement) : "Random Symbols"
-        }
-      </div>
-    `;
+    const heading = document.createElement("strong");
+    heading.textContent = "Blocking";
+
+    const term = document.createElement("span");
+    term.className = "entry-term";
+
+    // Never display the actual term while Streamer Mode is enabled.
+    term.textContent = streamerModeEnabled
+      ? "******"
+      : entry.term;
+
+    const meta = document.createElement("div");
+    meta.className = "entry-meta";
+
+    const caseText = entry.caseSensitive
+      ? "Strict Case"
+      : "Any Case";
+
+    const replacementText = entry.replacement
+      ? escapeHtml(entry.replacement)
+      : "Random Symbols";
+
+    meta.textContent =
+      `${caseText} - Replaced with: ${
+        streamerModeEnabled && entry.replacement
+          ? "******"
+          : replacementText
+      }`;
 
     const remove = document.createElement("button");
     remove.textContent = "Remove";
@@ -44,18 +71,42 @@ function render() {
       save();
     };
 
+    div.appendChild(heading);
+    div.appendChild(term);
+    div.appendChild(meta);
     div.appendChild(remove);
+
     list.appendChild(div);
   });
+
+  if (blacklist.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty-list";
+    empty.textContent = "No blacklisted phrases yet.";
+    list.appendChild(empty);
+  }
 }
 
+// Streamer Mode toggle
+document.getElementById("streamerMode").onchange = (event) => {
+  streamerModeEnabled = event.target.checked;
+
+  chrome.storage.sync.set(
+    {
+      streamerMode: streamerModeEnabled,
+    },
+    render
+  );
+};
+
+// Add a blacklisted phrase
 document.getElementById("add").onclick = () => {
   const termInput = document.getElementById("term");
   const replacementInput = document.getElementById("replacement");
   const caseInput = document.getElementById("caseSensitive");
 
   const term = termInput.value.trim();
-  let replacement = replacementInput.value.trim();
+  const replacement = replacementInput.value.trim();
 
   if (!term) return;
 
@@ -65,7 +116,7 @@ document.getElementById("add").onclick = () => {
     caseSensitive: caseInput.checked,
   });
 
-  // Reset UI
+  // Reset the form.
   termInput.value = "";
   replacementInput.value = "";
   caseInput.checked = false;
@@ -73,6 +124,7 @@ document.getElementById("add").onclick = () => {
   save();
 };
 
+// Escape HTML when displaying replacement text outside textContent.
 function escapeHtml(text) {
   const div = document.createElement("div");
   div.textContent = text;

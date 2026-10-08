@@ -34,7 +34,8 @@
         gap: 15px;
       }
 
-      .input-card {
+      .input-card,
+      .streamer-card {
         background: var(--card);
         padding: 15px;
         border-radius: 12px;
@@ -71,6 +72,24 @@
         gap: 8px;
         font-size: 14px;
         color: var(--text-dim);
+        cursor: pointer;
+      }
+
+      .streamer-card label {
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .streamer-card p {
+        margin: 8px 0 0;
+        color: var(--text-dim);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      input[type="checkbox"] {
+        accent-color: var(--primary);
         cursor: pointer;
       }
 
@@ -142,21 +161,52 @@
         background: var(--error);
         color: #fff;
       }
+
+      .empty-list {
+        color: var(--text-dim);
+        font-size: 13px;
+        text-align: center;
+        padding: 15px;
+      }
     </style>
   </head>
+
   <body>
     <h2>HideIt Settings</h2>
 
     <div class="container">
+      <div class="streamer-card">
+        <label for="streamerMode">
+          <input type="checkbox" id="streamerMode" />
+          Streamer Mode
+        </label>
+
+        <p>
+          Censors your blacklisted phrases in this settings popup
+          so they aren't visible while streaming.
+        </p>
+      </div>
+
       <div class="input-card">
-        <input type="text" id="term" placeholder="Phrases to block..." />
-        <input type="text" id="replacement" placeholder="Replacement text" />
+        <input
+          type="text"
+          id="term"
+          placeholder="Phrases to block..."
+        />
+
+        <input
+          type="text"
+          id="replacement"
+          placeholder="Replacement text"
+        />
+
         <div class="options-row">
           <label>
             <input type="checkbox" id="caseSensitive" />
             Case Sensitive
           </label>
         </div>
+
         <button id="add">Add Phrase</button>
       </div>
 
