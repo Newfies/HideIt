@@ -1,4 +1,10 @@
-# HideIt
+<h1 align="center">HideIt</h1>
+
+<p align="center">  
+  <a href="https://github.com/Newfies/HideIt/releases/latest/">  
+    <img src="https://img.shields.io/badge/Download_Latest_Version-%E2%96%BC-8957e5?labelColor=2a2a2a&style=for-the-badge" alt="Download"> 
+  </a> 
+</p>
 
 ## Features
 - Case sensitive option
