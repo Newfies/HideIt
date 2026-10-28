@@ -28,3 +28,9 @@
 6. Select the extracted HideIt folder containing manifest.json.
 > [!IMPORTANT]
 > Since its an unpacked extensions you need to keep them on your computer or else the extension stops working, I recommend putting it in a folder you know you won't delete. I have put mine in a folder in my Documents directory where I keep all my other unpacked extensions.
+
+
+## Notice
+
+This was made with the aid of AI, If I ever get more understanding I will definitely remake it and add more features
+
